@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewpoint" content="width-device, initial-scale=1.0">
+    <title>Weather System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="card">
+    <div class="search">
+        <input type="text" placeholder="Enter city name" spellcheck="false">
+        <button><img src="images/search.png"></button>
+    </div>
+    <div class="error">
+        <p>Invalid City Name</p>
+    </div>
+    <div class="weather">
+        <img src="images/rain.png" class="weather-icon">
+        <h1 class="temp">22°C</h1>
+        <h2 class="city">Galle</h2>
+        <div class="details">
+            <div class="col">
+                <img src="images/humidity.png">
+                <div>
+                    <p class="humidity">50%</p>
+                    <P>Humidity</P>
+                </div>
+            </div>
+            <div class="col">
+                <img src="images/wind.png">
+                <div>
+                    <p class="wind">15 km/h</p>
+                    <P>Wind Speed</P>
+                </div>
+            </div>
+        </div>
+</div>  
+
+<script>
+
+// Pointing to your backend server (replace with your backend URL if needed)
+const apiUrl = "http://localhost:8080/weather?city=";
+
+const searchBox = document.querySelector(".search input");
+const searchBtn = document.querySelector(".search button");
+const weatherIcon = document.querySelector(".weather-icon");
+
+async function checkWeather(city){
+    // Send the city to your backend
+    const response = await fetch(apiUrl + city);
+    
+
+    if(response.status == 404){
+        document.querySelector('.error').style.display = "block";
+        document.querySelector('.weather').style.display = "none";
+    } else {
+        const data = await response.json();  // Parse JSON response from backend
+
+        // Populate the data in the HTML
+        document.querySelector('.city').innerHTML = data.city;
+        document.querySelector('.temp').innerHTML = Math.round(data.temperature) + '°C';
+        document.querySelector('.humidity').innerHTML = data.humidity + '%';
+        document.querySelector('.wind').innerHTML = data.wind_speed + ' km/h';
+
+    
+        // Set weather icon based on condition
+        if (data.weather.toLowerCase().includes('cloud')) {
+            weatherIcon.src = "images/clouds.png";
+        } else if (data.weather.toLowerCase().includes('clear')) {
+            weatherIcon.src = "images/clear.png";
+        } else if (data.weather.toLowerCase().includes('rain')) {
+            weatherIcon.src = "images/rain.png";
+        } else if (data.weather.toLowerCase().includes('drizzle')) {
+            weatherIcon.src = "images/drizzle.png";
+        } else if (data.weather.toLowerCase().includes('mist')) {
+            weatherIcon.src = "images/mist.png";
+        } else if (data.weather.toLowerCase().includes('snow')) {
+            weatherIcon.src = "images/snow.png";
+}
+
+
+        // Show the weather and hide error
+        document.querySelector(".weather").style.display = "block";
+        document.querySelector(".error").style.display = "none";
+    }
+}
+
+searchBtn.addEventListener('click', () => {
+    const city = searchBox.value.trim();
+    if (city) {
+        checkWeather(city);  // Send the city name to your backend
+    } else {
+        alert("Please enter a city name.");
+    }
+});
+
+</script>
+
+</body>
+</html>

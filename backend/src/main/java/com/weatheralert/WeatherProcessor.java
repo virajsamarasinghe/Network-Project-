@@ -5,11 +5,13 @@ import com.google.gson.JsonParser;
 
 public class WeatherProcessor {
     public static String process(String weatherData) {
-        JsonObject json = JsonParser.parseString(weatherData).getAsJsonObject();
-        String city = json.get("name").getAsString();
-        double temp = json.get("main").getAsJsonObject().get("temp").getAsDouble();
-        String description = json.get("weather").getAsJsonArray().get(0).getAsJsonObject().get("description").getAsString();
+        try {
+            JsonObject json = JsonParser.parseString(weatherData).getAsJsonObject();
+            return json.toString(); // Return JSON directly
 
-        return "City: " + city + ", Temp: " + temp + "°C, Description: " + description;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "{\"error\": \"Error processing weather data.\"}";
+        }
     }
 }
