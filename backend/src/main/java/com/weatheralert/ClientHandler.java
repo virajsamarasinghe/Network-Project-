@@ -18,6 +18,9 @@ public class ClientHandler implements Runnable {
 
     @Override
     public void run() {
+        // Log the current thread to verify multi-threading
+        System.out.println("Handling request in thread: " + Thread.currentThread().getName());
+
         try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
              PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true)) {
 
