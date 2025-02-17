@@ -1,6 +1,4 @@
 package com.weatheralert;
-
-
 import java.net.Socket;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -18,6 +16,10 @@ public class ClientHandler implements Runnable {
 
     @Override
     public void run() {
+        // Get the thread name (e.g., pool-1-thread-2)
+        String threadName = Thread.currentThread().getName();
+        System.out.println("Handling request in thread: " + threadName);
+
         try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
              PrintWriter out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true)) {
 
@@ -65,7 +67,6 @@ public class ClientHandler implements Runnable {
             // Process weather data into JSON format before sending
             String processedWeatherData = WeatherProcessor.process(weatherData);
             sendResponse(out, 200, processedWeatherData);
-
 
         } catch (Exception e) {
             e.printStackTrace();
